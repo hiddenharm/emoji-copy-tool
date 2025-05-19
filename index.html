@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Emoji Copy Tool</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 2rem;
+    }
+    .emoji-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+    .emoji {
+      font-size: 2rem;
+      cursor: pointer;
+      padding: 10px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    .emoji:hover {
+      transform: scale(1.2);
+    }
+    .copied {
+      margin-top: 1rem;
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>✨ Click to Copy Emoji ✨</h1>
+  <div class="emoji-grid" id="emojiGrid"></div>
+  <div class="copied" id="copiedMessage"></div>
+
+  <script>
+    const emojis = ["😀", "😂", "😍", "😭", "😎", "🔥", "🥺", "👏", "🙌", "👍", "💯", "❤️", "🎉", "🧠", "🤔", "🌈"];
+    const grid = document.getElementById('emojiGrid');
+    const message = document.getElementById('copiedMessage');
+
+    emojis.forEach(emoji => {
+      const span = document.createElement('span');
+      span.className = 'emoji';
+      span.textContent = emoji;
+      span.addEventListener('click', () => {
+        navigator.clipboard.writeText(emoji).then(() => {
+          message.textContent = `"${emoji}" copied to clipboard! ✅`;
+          setTimeout(() => message.textContent = "", 1500);
+        });
+      });
+      grid.appendChild(span);
+    });
+  </script>
+</body>
+</html>
