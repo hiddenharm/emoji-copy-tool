@@ -12,6 +12,15 @@
       margin: 0;
       padding: 2rem;
     }
+    input[type="text"] {
+      padding: 10px;
+      width: 80%;
+      max-width: 400px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
     .emoji-grid {
       display: flex;
       flex-wrap: wrap;
@@ -26,6 +35,7 @@
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       transition: transform 0.2s;
+      position: relative;
     }
     .emoji:hover {
       transform: scale(1.2);
@@ -35,30 +45,81 @@
       color: green;
       font-weight: bold;
     }
+    .top-emojis {
+      margin: 2rem 0;
+    }
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
   <h1>✨ Click to Copy Emoji ✨</h1>
+  <input type="text" id="searchInput" placeholder="Search emojis..." />
+
+  <div class="top-emojis">
+    <div class="section-title">🔥 Most Copied Emojis</div>
+    <div class="emoji-grid" id="topEmojiGrid"></div>
+  </div>
+
   <div class="emoji-grid" id="emojiGrid"></div>
   <div class="copied" id="copiedMessage"></div>
 
   <script>
-    const emojis = ["😀", "😂", "😍", "😭", "😎", "🔥", "🥺", "👏", "🙌", "👍", "💯", "❤️", "🎉", "🧠", "🤔", "🌈"];
-    const grid = document.getElementById('emojiGrid');
-    const message = document.getElementById('copiedMessage');
+    const emojis = [
+      "😂", "😭", "😍", "🤣", "😊", "🙏", "💕", "🥰", "😘", "👍",
+      "🔥", "💀", "🥺", "😩", "💔", "😭😭", "👏", "😎", "🤔", "💯",
+      "🫶", "🫠", "🎉", "📸", "🎶", "📢", "🔗", "📍", "🚀", "🧠",
+      "💡", "👀", "🌈", "✨", "🤷‍♂️", "🤷‍♀️", "🐶", "🐱", "🍕", "🍔",
+      "🧋", "☕", "🎮", "🎧", "📱", "💻", "📝", "📚", "📷", "🏀",
+    ];
 
-    emojis.forEach(emoji => {
+    const emojiCounts = new Map();
+    const grid = document.getElementById('emojiGrid');
+    const topGrid = document.getElementById('topEmojiGrid');
+    const message = document.getElementById('copiedMessage');
+    const searchInput = document.getElementById('searchInput');
+
+    function renderEmojis(filter = '') {
+      grid.innerHTML = '';
+      emojis.filter(e => e.includes(filter)).forEach(emoji => {
+        const span = createEmojiElement(emoji);
+        grid.appendChild(span);
+      });
+    }
+
+    function createEmojiElement(emoji) {
       const span = document.createElement('span');
       span.className = 'emoji';
       span.textContent = emoji;
       span.addEventListener('click', () => {
         navigator.clipboard.writeText(emoji).then(() => {
           message.textContent = `"${emoji}" copied to clipboard! ✅`;
-          setTimeout(() => message.textContent = "", 1500);
+          setTimeout(() => message.textContent = '', 1500);
+          emojiCounts.set(emoji, (emojiCounts.get(emoji) || 0) + 1);
+          updateTopEmojis();
         });
       });
-      grid.appendChild(span);
+      return span;
+    }
+
+    function updateTopEmojis() {
+      topGrid.innerHTML = '';
+      [...emojiCounts.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10)
+        .forEach(([emoji]) => {
+          topGrid.appendChild(createEmojiElement(emoji));
+        });
+    }
+
+    searchInput.addEventListener('input', (e) => {
+      renderEmojis(e.target.value);
     });
+
+    renderEmojis();
   </script>
 </body>
 </html>
