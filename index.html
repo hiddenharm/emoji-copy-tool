@@ -1,131 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9872795332759744"
-     crossorigin="anonymous"></script><meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Emoji Copy Tool</title>
+  <meta charset="UTF-8" />
+  <title>My Utility Tools</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Access my all-in-one tools: emoji copy and unit converter." />
   <style>
     body {
       font-family: sans-serif;
       text-align: center;
+      padding: 4rem;
       background: #f9f9f9;
-      margin: 0;
-      padding: 2rem;
     }
-    input[type="text"] {
-      padding: 10px;
-      width: 80%;
-      max-width: 400px;
-      margin-bottom: 20px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-    }
-    .emoji-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-    }
-    .emoji {
+    h1 {
       font-size: 2rem;
-      cursor: pointer;
-      padding: 10px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
-      position: relative;
+      margin-bottom: 2rem;
     }
-    .emoji:hover {
-      transform: scale(1.2);
+    a {
+      display: block;
+      margin: 1.5rem auto;
+      font-size: 1.5rem;
+      color: #007bff;
+      text-decoration: none;
     }
-    .copied {
-      margin-top: 1rem;
-      color: green;
-      font-weight: bold;
-    }
-    .top-emojis {
-      margin: 2rem 0;
-    }
-    .section-title {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-bottom: 10px;
+    a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <h1>✨ Click to Copy Emoji ✨</h1>
-  <input type="text" id="searchInput" placeholder="Search emojis..." />
-
-  <div class="top-emojis">
-    <div class="section-title">🔥 Most Copied Emojis</div>
-    <div class="emoji-grid" id="topEmojiGrid"></div>
-  </div>
-
-  <div class="emoji-grid" id="emojiGrid"></div>
-  <div class="copied" id="copiedMessage"></div>
-
-  <script>
-    const emojis = [
-      "😂", "😭", "😍", "🤣", "😊", "🙏", "💕", "🥰", "😘", "😎", "🤩", "👍", "👏", "🙌", "🫶", "🔥", "💀", "💯", "❤️", "💔",
-      "😢", "😡", "🤯", "🤔", "😳", "😤", "😇", "😈", "👀", "🎉", "🥳", "✨", "🌟", "🌈", "⚡", "☀️", "🌙", "🌸", "💐", "🌹",
-      "🍀", "🍕", "🍔", "🍟", "🍣", "🍿", "🍩", "🍪", "🎂", "🧋", "☕", "🍻", "🍷", "🎮", "🎧", "📱", "💻", "📷", "📸",
-      "📚", "📝", "🔗", "📍", "🚀", "✈️", "🏝️", "🏀", "⚽", "🏆", "🎯", "🎲", "🎵", "🎶", "📢", "🧠", "💡", "🫠", "😮‍💨", "🤡",
-      "🤑", "🥶", "🥵", "😴", "😵", "😬", "😌", "😐", "🤤", "🤪", "🐶", "🐱", "🐵", "🐸", "🦋", "🐝", "🐥", "🐠", "🦄", "👻",
-      "💪", "🦾", "🦿", "🦷", "🧠", "🫁", "🫀", "🦴", "👁️", "👂", "👃", "🧔", "👩", "👨", "👶", "👧", "👦", "🧓", "👵", "👴",
-      "🧒", "👲", "👳", "🧕", "👮", "👷", "💂", "🕵️", "🎅", "🤶", "🧙", "🧛", "🧟", "🧞", "🧜", "🧚", "👼", "🤰", "🤱", "🙇",
-      "💁", "🙅", "🙆", "🙋", "🤦", "🤷", "🧏", "🙎", "🙍", "💇", "💆", "🧖", "🧘", "👯", "🫂", "💃", "🕺", "🛀", "🛌", "🧑‍🤝‍🧑",
-      "🧍", "🧎", "🚶", "🏃", "💃", "🕺", "🧗", "🏇", "⛷️", "🏂", "🏌️", "🏄", "🚣", "🏊", "🤽", "🚴", "🚵", "🤸", "🤾", "🧘",
-      "🛹", "🛷", "⛸️", "🥌", "🪂", "🏋️", "🤼", "🤺", "🤹", "🎽", "🥇", "🥈", "🥉", "🏅", "🎖️", "🏆", "🏵️", "🎗️", "🎫", "🎟️"
-    ];
-
-    const emojiCounts = new Map();
-    const grid = document.getElementById('emojiGrid');
-    const topGrid = document.getElementById('topEmojiGrid');
-    const message = document.getElementById('copiedMessage');
-    const searchInput = document.getElementById('searchInput');
-
-    function renderEmojis(filter = '') {
-      grid.innerHTML = '';
-      emojis.filter(e => e.includes(filter)).forEach(emoji => {
-        const span = createEmojiElement(emoji);
-        grid.appendChild(span);
-      });
-    }
-
-    function createEmojiElement(emoji) {
-      const span = document.createElement('span');
-      span.className = 'emoji';
-      span.textContent = emoji;
-      span.addEventListener('click', () => {
-        navigator.clipboard.writeText(emoji).then(() => {
-          message.textContent = `"${emoji}" copied to clipboard! ✅`;
-          setTimeout(() => message.textContent = '', 1500);
-          emojiCounts.set(emoji, (emojiCounts.get(emoji) || 0) + 1);
-          updateTopEmojis();
-        });
-      });
-      return span;
-    }
-
-    function updateTopEmojis() {
-      topGrid.innerHTML = '';
-      [...emojiCounts.entries()]
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 10)
-        .forEach(([emoji]) => {
-          topGrid.appendChild(createEmojiElement(emoji));
-        });
-    }
-
-    searchInput.addEventListener('input', (e) => {
-      renderEmojis(e.target.value);
-    });
-
-    renderEmojis();
-  </script>
+  <h1>🛠️ My Utility Tools</h1>
+  <a href="/emoji/">😊 Emoji Copy Tool</a>
+  <a href="/converter/">📏 Unit Converter Tool</a>
 </body>
 </html>
+
